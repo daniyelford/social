@@ -7,8 +7,8 @@ import Instagram from '@/Pages/Tooles/Instagram.vue'
 const routes = [
   { path: '/', name: 'login', component: Login ,meta:{onlyAuth:true}},
   { path: '/dashboard', name: 'dashboard', component: Dashboard ,meta:{mustLogin:true}},
-  {path: '/telegram',name: 'telegram',component: Telagram},
-  {path: '/instagram',name: 'instagram',component: Instagram},
+  {path: '/telegram',name: 'telegram',component: Telagram ,meta:{mustLogin:true,mustAdmin:true}},
+  {path: '/instagram',name: 'instagram',component: Instagram ,meta:{mustLogin:true,mustAdmin:true}},
 ]
 const router = createRouter({
   history: createWebHistory(),
@@ -24,6 +24,12 @@ router.beforeEach(async (to, from, next) => {
       }
       if (meta.onlyAuth && res.status === 'success'){
         return next('/dashboard');
+      }
+    }
+    if(meta.mustAdmin){
+      const res = await sendApi({action: "users_action/login_handler", handler:'check_admin'});
+      if(res.status !== 'success'){
+          return next('/dashboard');
       }
     }
     next();

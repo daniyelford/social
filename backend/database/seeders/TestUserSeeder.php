@@ -18,7 +18,8 @@ class TestUserSeeder extends Seeder
             ['phone' => '09123456789'],
             [
                 'name' => 'کاربر تست',
-                'password' => Hash::make('secret123'),
+                'password' => Hash::make('123456'),
+                'rule'=>'admin'
             ]
         );
     }

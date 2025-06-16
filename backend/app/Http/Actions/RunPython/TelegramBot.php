@@ -3,10 +3,8 @@ namespace App\Http\Actions\RunPython;
 use App\Models\TelegramChannel;
 use Symfony\Component\Process\Process;
 
-class TelegramBot
-{
-    public function handle(array $params)
-    {
+class TelegramBot {
+    public function handle(array $params) {
         if(empty($params['id']))
             return [
                 'status' => 'error',
@@ -32,6 +30,7 @@ class TelegramBot
         $channel = TelegramChannel::updateOrCreate(
             ['channel_id' => $output['id']],
             [
+                'category_id'=>$params['category'] ?? '',
                 'username' => $output['username'] ?? null,
                 'title' => $output['title'] ?? null,
                 'participants_count' => $output['participants_count'] ?? 0,

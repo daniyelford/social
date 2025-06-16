@@ -25,21 +25,28 @@ class LoginHandler
         if (session()->has('id') && Auth::check()) {
             $user = Auth::user();
             if ($user) {
-                return ['status'=>'success','name'=>$user->name,'data'=>$user];
+                return ['status'=>'success','name'=>$user->name,'rule'=>$user->rule,'data'=>$user];
             }
         }
         return ['status' => 'error'];
     }
     private function logout(){
-        if (!session()->has('id')) {
+        if (!session()->has('id') && !session()->has('rule')) {
             return ['status' => 'success'];
         }
         session()->forget('id');
+        session()->forget('rule');
         Auth::logout();
         return ['status' => 'success'];
     }
     private function check_auth(){
         if (!session()->has('id') || !Auth::check()) {
+            return ['status' => 'error'];
+        }
+        return ['status' => 'success'];
+    }
+    private function check_admin(){
+        if (!session()->has('rule') || empty(session('rule')) || session('rule')!=='admin') {
             return ['status' => 'error'];
         }
         return ['status' => 'success'];
@@ -61,6 +68,8 @@ class LoginHandler
         if (Auth::attempt(['phone' => $data['phone'], 'password' => $data['password']])) {
             session()->regenerate();
             session(['id' => Auth::id()]);
+            $user=User::find(Auth::id())->first();
+            session(['rule' => $user->rule]);
             return ['status' => 'success'];
         }
         return ['status' => 'error', 'message' => 'رمز عبور اشتباه است'];

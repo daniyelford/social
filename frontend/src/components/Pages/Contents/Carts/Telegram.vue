@@ -83,7 +83,6 @@
     onMounted(async () => {
         const carts = await sendApi({action: "page_handler/telegram_cards", handler:'all_telegram_cards'});
         if(carts.status==="success") {
-            console.log(carts);
             cards.value = carts.data.map(cat => ({
                 id: cat.id,
                 username: cat.username,
